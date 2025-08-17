@@ -11,7 +11,6 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -39,94 +38,88 @@ data class BottomNavItem(
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HerCircleApp(modifier: Modifier = Modifier) {
+fun HerCircleApp(modifier: Modifier = Modifier, prefs: Prefs) {
     val navController = rememberNavController()
-    val ctx = LocalContext.current
-    val prefs = remember { Prefs(ctx) }
+    val scope = rememberCoroutineScope()
 
-    // 👇 Observe onboarding flag
+    // Observe onboarding flag and theme
     val isOnboarded by prefs.isOnboarded.collectAsState(initial = false)
+    val themeMode by prefs.themeMode.collectAsState(initial = "system")
 
+    // Bottom nav items
     val items = listOf(
         BottomNavItem(Routes.Home, "Home") { Icon(Icons.Default.Home, contentDescription = "Home") },
         BottomNavItem(Routes.Calendar, "Calendar") { Icon(Icons.Default.DateRange, contentDescription = "Calendar") },
         BottomNavItem(Routes.Log, "Log") { Icon(Icons.Default.List, contentDescription = "Log") },
-        BottomNavItem(Routes.Settings, "Settings") { Icon(Icons.Default.Settings, contentDescription = "Settings") },
+        BottomNavItem(Routes.Settings, "Settings") { Icon(Icons.Default.Settings, contentDescription = "Settings") }
     )
 
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry?.destination?.route
 
-    Scaffold(
-        topBar = {
-            if (currentRoute !in listOf(Routes.Onboarding, Routes.Setup)) {
-                TopAppBar(
-                    title = { Text(currentRoute?.replaceFirstChar { it.uppercase() } ?: "HerCircle") },
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.primaryContainer,
-                        titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                    )
-                )
-            }
-        },
-        bottomBar = {
-            if (currentRoute in listOf(Routes.Home, Routes.Calendar, Routes.Log, Routes.Settings)) {
-                NavigationBar {
-                    items.forEach { item ->
-                        NavigationBarItem(
-                            icon = item.icon,
-                            label = { Text(item.label) },
-                            selected = currentRoute == item.route,
-                            onClick = {
-                                navController.navigate(item.route) {
-                                    popUpTo(navController.graph.findStartDestination().id) {
-                                        saveState = true
-                                    }
-                                    launchSingleTop = true
-                                    restoreState = true
-                                }
-                            }
+    // Apply theme dynamically
+    HerCircleTheme(themeMode = themeMode) {
+        Scaffold(
+            topBar = {
+                if (currentRoute !in listOf(Routes.Onboarding, Routes.Setup)) {
+                    TopAppBar(
+                        title = { Text(currentRoute?.replaceFirstChar { it.uppercase() } ?: "HerCircle") },
+                        colors = TopAppBarDefaults.topAppBarColors(
+                            containerColor = MaterialTheme.colorScheme.primaryContainer,
+                            titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
                         )
-                    }
+                    )
                 }
-            }
-        },
-        containerColor = MaterialTheme.colorScheme.background
-    ) { padding ->
-        NavHost(
-            navController = navController,
-            // 👇 Dynamic start destination
-            startDestination = if (isOnboarded) Routes.Home else Routes.Onboarding,
-            modifier = Modifier.padding(padding)
-        ) {
-            composable(Routes.Onboarding) {
-                OnboardingScreen(onGetStarted = { navController.navigate(Routes.Setup) })
-            }
-            composable(Routes.Setup) {
-                val scope = rememberCoroutineScope()
-                SetupScreen(
-                    onComplete = {
-                        scope.launch { prefs.setOnboarded(true) } // 👈 save flag
-                        navController.navigate(Routes.Home) {
-                            popUpTo(Routes.Onboarding) { inclusive = true }
+            },
+            bottomBar = {
+                if (currentRoute in listOf(Routes.Home, Routes.Calendar, Routes.Log, Routes.Settings)) {
+                    NavigationBar {
+                        items.forEach { item ->
+                            NavigationBarItem(
+                                icon = item.icon,
+                                label = { Text(item.label) },
+                                selected = currentRoute == item.route,
+                                onClick = {
+                                    navController.navigate(item.route) {
+                                        popUpTo(navController.graph.findStartDestination().id) { saveState = true }
+                                        launchSingleTop = true
+                                        restoreState = true
+                                    }
+                                }
+                            )
                         }
                     }
-                )
-            }
-            composable(Routes.Home) {
-                HomeScreen()
-            }
-            composable(Routes.Calendar) {
-                CalendarScreen(onBack = { navController.popBackStack() })
-            }
-            composable(Routes.Log) {
-                LogScreen(onBack = { navController.popBackStack() })
-            }
-            composable(Routes.Settings) {
-                SettingsScreen(
-                    navController = navController,
-                    onBack = { navController.popBackStack() }
-                )
+                }
+            },
+            containerColor = MaterialTheme.colorScheme.background
+        ) { padding ->
+            NavHost(
+                navController = navController,
+                startDestination = if (isOnboarded) Routes.Home else Routes.Onboarding,
+                modifier = modifier.padding(padding)
+            ) {
+                composable(Routes.Onboarding) {
+                    OnboardingScreen(onGetStarted = { navController.navigate(Routes.Setup) })
+                }
+                composable(Routes.Setup) {
+                    SetupScreen(
+                        onComplete = {
+                            scope.launch { prefs.setOnboarded(true) }
+                            navController.navigate(Routes.Home) {
+                                popUpTo(Routes.Onboarding) { inclusive = true }
+                            }
+                        }
+                    )
+                }
+                composable(Routes.Home) { HomeScreen() }
+                composable(Routes.Calendar) { CalendarScreen(onBack = { navController.popBackStack() }) }
+                composable(Routes.Log) { LogScreen(onBack = { navController.popBackStack() }) }
+                composable(Routes.Settings) {
+                    SettingsScreen(
+                        navController = navController,
+                        onBack = { navController.popBackStack() }
+                    )
+                }
             }
         }
     }
