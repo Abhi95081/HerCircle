@@ -39,6 +39,9 @@ fun SettingsScreen(
     var showThemeDialog by remember { mutableStateOf(false) }
     var showResetConfirm by remember { mutableStateOf(false) }
 
+    // Observe current theme mode to apply changes immediately
+    val themeMode by prefs.themeMode.collectAsState(initial = "system")
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -117,11 +120,15 @@ fun SettingsScreen(
                     onClick = {
                         showResetConfirm = false
                         scope.launch {
-                            prefs.reset()
+                            prefs.resetAll() // Clear all saved preferences
                             navController.navigate(Routes.Onboarding) {
-                                popUpTo(0) // clear history
+                                popUpTo(navController.graph.startDestinationId) {
+                                    inclusive = true // Remove all previous destinations from back stack
+                                }
+                                launchSingleTop = true
                             }
                         }
+
                     }
                 ) {
                     Text("Reset", color = MaterialTheme.colorScheme.error)
