@@ -149,7 +149,7 @@ fun SetupScreen(onComplete: () -> Unit) {
         Button(
             onClick = {
                 scope.launch {
-                    prefs.save(lastDate.toEpochDay(), cycleLen, periodLen)
+                    prefs.savePeriodData(lastDate.toEpochDay(), cycleLen, periodLen)
                     // Schedule reminders
                     val p = CycleMath.predict(lastDate, cycleLen, periodLen)
                     ReminderScheduler.scheduleOnDate(
