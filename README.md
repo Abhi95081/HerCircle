@@ -17,8 +17,14 @@
 ---
 
 ## Screenshots 📱
-
-*(Add screenshots of your app here for better visual appeal)*  
+<img width="1600" height="2560" alt="image" src="https://github.com/user-attachments/assets/251f57f8-7451-4c5e-8c77-ea1ba94cb843" />
+<img width="1600" height="2560" alt="image" src="https://github.com/user-attachments/assets/f47e7e52-49cb-452e-9591-39c66aa75b2b" />
+<img width="1600" height="2560" alt="image" src="https://github.com/user-attachments/assets/c74915f4-e4d9-45cf-b34f-a73f579ee733" />
+<img width="1600" height="2560" alt="image" src="https://github.com/user-attachments/assets/4151b971-bccb-4a38-8b1b-581b22bed94f" />
+<img width="1600" height="2560" alt="image" src="https://github.com/user-attachments/assets/f57882c9-13bd-46cc-bd65-74b8d20a5af0" />
+<img width="1600" height="2560" alt="image" src="https://github.com/user-attachments/assets/a552af4a-94bf-4b8c-9723-5bcaed6a3665" />
+<img width="1600" height="2560" alt="image" src="https://github.com/user-attachments/assets/d4c474a1-47da-464c-bc14-43d085047bea" />
+<img width="1600" height="2560" alt="image" src="https://github.com/user-attachments/assets/c205902c-866a-4e2a-a8c4-f93023529ebe" />
 
 ---
 
