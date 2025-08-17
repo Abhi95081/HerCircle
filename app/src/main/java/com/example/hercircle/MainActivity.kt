@@ -9,9 +9,12 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import com.example.hercircle.AppUi.HerCircleApp
+import com.example.hercircle.AppUi.HerCircleTheme
+import com.example.hercircle.data.Prefs
 import com.example.hercircle.ui.theme.HerCircleTheme
 
 class MainActivity : ComponentActivity() {
@@ -19,14 +22,14 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        val prefs = Prefs(this)
+
         setContent {
-            HerCircleTheme {
-                Scaffold(
-                    modifier = Modifier.fillMaxSize()
-                ) { innerPadding ->
-                    HerCircleApp(
-                        modifier = Modifier.padding(innerPadding)
-                    )
+            val themeMode by prefs.themeMode.collectAsState(initial = "system")
+
+            HerCircleTheme(themeMode = themeMode) {
+                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                    HerCircleApp(modifier = Modifier.padding(innerPadding), prefs = prefs)
                 }
             }
         }
