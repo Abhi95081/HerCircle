@@ -3,6 +3,8 @@ package com.example.hercircle.screens
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
@@ -20,62 +22,65 @@ import com.example.hercircle.R
 
 @Composable
 fun OnboardingScreen(onGetStarted: () -> Unit) {
+    val scrollState = rememberScrollState()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .verticalScroll(scrollState)
             .background(
                 Brush.verticalGradient(
                     listOf(Color(0xFFFCEFF9), Color(0xFFE1BEE7), Color(0xFFD1C4E9))
                 )
             )
-            .padding(24.dp),
+            .padding(horizontal = 24.dp, vertical = 32.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceBetween
+        verticalArrangement = Arrangement.Top
     ) {
-        Spacer(Modifier.height(40.dp))
-
-        // App Logo or Illustration
+        // App Logo / Illustration
         Image(
-            painter = painterResource(id = R.drawable.ic_launcher_foreground), // replace with your logo/illustration
+            painter = painterResource(id = R.drawable.ic_launcher_foreground), // Replace with actual image
             contentDescription = "App Logo",
             modifier = Modifier
-                .size(120.dp)
-                .padding(bottom = 16.dp)
+                .size(140.dp)
+                .padding(bottom = 24.dp)
         )
 
-        // Title + Subtitle
+        // App Title + Subtitle
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
                 "HerCircle",
-                fontSize = 40.sp,
+                fontSize = 42.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color(0xFF6A1B9A)
             )
-            Spacer(Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             Text(
                 "Your AI-powered cycle companion",
                 fontSize = 18.sp,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.75f)
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.75f),
+                textAlign = androidx.compose.ui.text.style.TextAlign.Center
             )
         }
 
-        Spacer(Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(32.dp))
 
-        // Feature Card
+        // Features Card
         Card(
             colors = CardDefaults.cardColors(containerColor = Color.White),
             elevation = CardDefaults.cardElevation(8.dp),
             shape = RoundedCornerShape(24.dp),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
         ) {
             Column(
-                Modifier.padding(20.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+                Modifier.padding(24.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 Text(
                     "What you’ll get",
                     fontWeight = FontWeight.SemiBold,
-                    fontSize = 20.sp,
+                    fontSize = 22.sp,
                     color = MaterialTheme.colorScheme.primary
                 )
 
@@ -86,9 +91,9 @@ fun OnboardingScreen(onGetStarted: () -> Unit) {
             }
         }
 
-        Spacer(Modifier.height(40.dp))
+        Spacer(modifier = Modifier.height(40.dp))
 
-        // CTA Button
+        // Get Started Button
         Button(
             onClick = onGetStarted,
             shape = RoundedCornerShape(50),
@@ -99,8 +104,6 @@ fun OnboardingScreen(onGetStarted: () -> Unit) {
         ) {
             Text("Get Started", fontSize = 18.sp, color = Color.White)
         }
-
-        Spacer(Modifier.height(20.dp))
     }
 }
 
@@ -113,7 +116,7 @@ fun FeatureItem(text: String) {
             tint = Color(0xFF8E24AA),
             modifier = Modifier.size(22.dp)
         )
-        Spacer(Modifier.width(8.dp))
+        Spacer(modifier = Modifier.width(12.dp))
         Text(text, style = MaterialTheme.typography.bodyMedium)
     }
 }
