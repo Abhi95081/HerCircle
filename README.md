@@ -1,9 +1,5 @@
 # 🌸 HerCircle
 
-<div style="display: flex; flex-wrap: wrap; gap: 16px;">
-  <img width="300" src="https://github.com/user-attachments/assets/251f57f8-7451-4c5e-8c77-ea1ba94cb843" alt="Screenshot 1"/>
-  </div>
-
 **HerCircle** is a modern, intuitive Android app built with **Kotlin** and **Jetpack Compose** for menstrual cycle tracking and personal health management. The app features onboarding, customizable themes, reminders, and a clean, user-friendly interface.
 
 ---
